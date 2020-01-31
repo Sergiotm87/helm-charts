@@ -1,0 +1,56 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "django-chart.fullname" . }}-migration
+  labels:
+    {{- include "django-chart.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "5"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded,hook-failed
+spec:
+  template:
+    metadata:
+      name: {{ include "django-chart.fullname" . }}-migration
+      labels:
+        {{- include "django-chart.labels" . | nindent 8 }}
+    spec:
+      imagePullSecrets:
+      {{- if .Values.imagePullSecrets.name }}
+        - name: {{ .Values.imagePullSecrets.name }}
+      {{- else }}
+        - name: {{ include "django-chart.fullname" . }}-regcred
+      {{- end }}
+      serviceAccountName: {{ include "django-chart.serviceAccountName" . }}
+      restartPolicy: Never
+      containers:
+      - name: post-install-upgrade-job
+        image: {{ .Values.image.repository }}:{{ .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "django-chart.fullname" . }}-pgcred
+                key: username
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "django-chart.fullname" . }}-pgcred
+                key: dbname
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "django-chart.fullname" . }}-pgcred
+                key: password
+          - name: POSTGRES_HOST
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "django-chart.fullname" . }}-pgcred
+                key: host
+          - name: POSTGRES_PORT
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "django-chart.fullname" . }}-pgcred
+                key: port
+        command: ["python","/app/manage.py","migrate"]
