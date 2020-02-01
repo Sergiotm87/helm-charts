@@ -33,28 +33,48 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.postgresql.credentials.name }}
+                  name: {{ .Values.postgresql.credentials.name }}
+                  {{- else }}
                   name: {{ include "django-chart.fullname" . }}-pgcred
-                  key: username
+                  {{- end }}
+                  key: pgusername
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.postgresql.credentials.name }}
+                  name: {{ .Values.postgresql.credentials.name }}
+                  {{- else }}
                   name: {{ include "django-chart.fullname" . }}-pgcred
-                  key: dbname
+                  {{- end }}
+                  key: pgdbname
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.postgresql.credentials.name }}
+                  name: {{ .Values.postgresql.credentials.name }}
+                  {{- else }}
                   name: {{ include "django-chart.fullname" . }}-pgcred
-                  key: password
+                  {{- end }}
+                  key: pgpassword
             - name: POSTGRES_HOST
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.postgresql.credentials.name }}
+                  name: {{ .Values.postgresql.credentials.name }}
+                  {{- else }}
                   name: {{ include "django-chart.fullname" . }}-pgcred
-                  key: host
+                  {{- end }}
+                  key: pghost
             - name: POSTGRES_PORT
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.postgresql.credentials.name }}
+                  name: {{ .Values.postgresql.credentials.name }}
+                  {{- else }}
                   name: {{ include "django-chart.fullname" . }}-pgcred
-                  key: port
+                  {{- end }}
+                  key: pgport
           ports:
             - name: http
               containerPort: 8000

@@ -29,12 +29,17 @@ postgresql:
   defaulthost: django-postgresql.default
   enabled: true
   # shared credentials for django/postgres
+  credentials:
+    # If already created. set create to false
+    name: postgres-pgcred
+    create: false
   global:
     postgresql:
       postgresqlDatabase: public
       postgresqlUsername: normalman
       postgresqlPassword: password
       servicePort: 5432
+
 
 service:
   type: NodePort
