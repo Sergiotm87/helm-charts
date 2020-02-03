@@ -15,11 +15,7 @@ spec:
         {{- include "django-chart.selectorLabels" . | nindent 8 }}
     spec:
       imagePullSecrets:
-      {{- if .Values.imagePullSecrets.name }}
-        - name: {{ .Values.imagePullSecrets.name }}
-      {{- else }}
-        - name: {{ include "django-chart.fullname" . }}-regcred
-      {{- end }}
+        - name: {{ include "imagePullSecrets.name" . }}
       serviceAccountName: {{ include "django-chart.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -33,47 +29,27 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  {{- if .Values.postgresql.credentials.name }}
-                  name: {{ .Values.postgresql.credentials.name }}
-                  {{- else }}
-                  name: {{ include "django-chart.fullname" . }}-pgcred
-                  {{- end }}
+                  name: {{ include "secretKeyRef.name" . }}
                   key: pgusername
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  {{- if .Values.postgresql.credentials.name }}
-                  name: {{ .Values.postgresql.credentials.name }}
-                  {{- else }}
-                  name: {{ include "django-chart.fullname" . }}-pgcred
-                  {{- end }}
+                  name: {{ include "secretKeyRef.name" . }}
                   key: pgdbname
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  {{- if .Values.postgresql.credentials.name }}
-                  name: {{ .Values.postgresql.credentials.name }}
-                  {{- else }}
-                  name: {{ include "django-chart.fullname" . }}-pgcred
-                  {{- end }}
+                  name: {{ include "secretKeyRef.name" . }}
                   key: pgpassword
             - name: POSTGRES_HOST
               valueFrom:
                 secretKeyRef:
-                  {{- if .Values.postgresql.credentials.name }}
-                  name: {{ .Values.postgresql.credentials.name }}
-                  {{- else }}
-                  name: {{ include "django-chart.fullname" . }}-pgcred
-                  {{- end }}
+                  name: {{ include "secretKeyRef.name" . }}
                   key: pghost
             - name: POSTGRES_PORT
               valueFrom:
                 secretKeyRef:
-                  {{- if .Values.postgresql.credentials.name }}
-                  name: {{ .Values.postgresql.credentials.name }}
-                  {{- else }}
-                  name: {{ include "django-chart.fullname" . }}-pgcred
-                  {{- end }}
+                  name: {{ include "secretKeyRef.name" . }}
                   key: pgport
           ports:
             - name: http
