@@ -15,7 +15,7 @@ image:
 imagePullSecrets:
   # If already created
   #name: docker_reg_secrt
-  create: false
+  create: true
   registry: registry.gitlab.com
   username: registryusername
   password: registrypassword
@@ -23,18 +23,21 @@ imagePullSecrets:
 ## Configuration values for postgresql
 ## ref: https://github.com/helm/charts/blob/master/stable/postgresql/README.md
 postgresql:
-  # remote:
-  #host: 42.15.51.24
-  # local:
   defaulthost: django-postgresql.default
   enabled: true
   # shared credentials for django/postgres
+  credentials:
+    # If already created. set create to false
+    #name: postgres-pgcred
+    create: true
   global:
     postgresql:
       postgresqlDatabase: public
       postgresqlUsername: normalman
       postgresqlPassword: password
+      host: 42.15.51.24
       servicePort: 5432
+
 
 service:
   type: NodePort

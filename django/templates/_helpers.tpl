@@ -69,3 +69,25 @@ Create custom imagePullSecret
 {{- define "imagePullSecret" }}
 {{- printf "{\"auths\": {\"%s\": {\"auth\": \"%s\"}}}" .Values.imagePullSecrets.registry (printf "%s:%s" .Values.imagePullSecrets.username .Values.imagePullSecrets.password | b64enc) | b64enc }}
 {{- end }}
+
+{{/*
+Create imagePullSecret name
+*/}}
+{{- define "imagePullSecrets.name" }}
+{{- if eq .Values.imagePullSecrets.create true }}
+{{- include "django-chart.fullname" . }}-regcred
+{{- else }}
+{{- .Values.imagePullSecrets.name }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create secretKeyRef name
+*/}}
+{{- define "secretKeyRef.name" }}
+{{- if eq .Values.postgresql.credentials.create true }}
+{{- include "django-chart.fullname" . }}-pgcred
+{{- else }}
+{{- .Values.postgresql.credentials.name }}
+{{- end }}
+{{- end }}

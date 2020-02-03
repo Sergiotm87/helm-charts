@@ -15,11 +15,7 @@ spec:
         {{- include "django-chart.selectorLabels" . | nindent 8 }}
     spec:
       imagePullSecrets:
-      {{- if .Values.imagePullSecrets.name }}
-        - name: {{ .Values.imagePullSecrets.name }}
-      {{- else }}
-        - name: {{ include "django-chart.fullname" . }}-regcred
-      {{- end }}
+        - name: {{ include "imagePullSecrets.name" . }}
       serviceAccountName: {{ include "django-chart.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -33,28 +29,28 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "django-chart.fullname" . }}-pgcred
-                  key: username
+                  name: {{ include "secretKeyRef.name" . }}
+                  key: pgusername
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "django-chart.fullname" . }}-pgcred
-                  key: dbname
+                  name: {{ include "secretKeyRef.name" . }}
+                  key: pgdbname
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "django-chart.fullname" . }}-pgcred
-                  key: password
+                  name: {{ include "secretKeyRef.name" . }}
+                  key: pgpassword
             - name: POSTGRES_HOST
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "django-chart.fullname" . }}-pgcred
-                  key: host
+                  name: {{ include "secretKeyRef.name" . }}
+                  key: pghost
             - name: POSTGRES_PORT
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "django-chart.fullname" . }}-pgcred
-                  key: port
+                  name: {{ include "secretKeyRef.name" . }}
+                  key: pgport
           ports:
             - name: http
               containerPort: 8000
