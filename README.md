@@ -1,3 +1,3 @@
 # helm-charts
 
-* [Django](./django/README)
+* [Django](django/README.md)
